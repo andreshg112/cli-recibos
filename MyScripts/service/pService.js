@@ -1,5 +1,5 @@
 app.service("recibosService", function ($http) {
-    var uri = "http://localhost/api-recibo/recibos";
+    var uri = "http://localhost/ar-recibos/recibos";
     this.get = function (id) {
         var req = $http.get(uri + '/' + id);
         return req;
