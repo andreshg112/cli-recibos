@@ -1,21 +1,19 @@
 app.controller('contactosController', function ($scope, recibosService) {
     //VistaModelo
-    $scope.Contact = {}; //Objeto Actual
-    $scope.Contacts = []; //Listado de Objetos
+    $scope.recibo = {}; //Objeto Actual
+    $scope.recibos = []; //Listado de Objetos
     $scope.editMode = false; // Modo de Edición
     //Cargar los datos
     loadRecords();
     //Function to Reset Scope variables
     function initialize() {
-        $scope.Contact = {};
-        $scope.Contact.nombre = 0;
-        $scope.Contact.telefono = "";
+        $scope.recibo = {};
     }
 
     function loadRecords() {
         var promiseGet = recibosService.getAll();
         promiseGet.then(function (pl) {
-            $scope.Contacts = pl.data.result;
+            $scope.recibos = pl.data.result;
         },
                 function (errorPl) {
                     console.log('failure loading Contactos', errorPl);
@@ -35,24 +33,25 @@ app.controller('contactosController', function ($scope, recibosService) {
         $('#regModal').modal('hide');
     };
     $scope.get = function () {
-        $scope.Contact = this.contact;
+        $scope.recibo = this.recibo;
         $('#viewModal').modal('show');
+    };
+    $scope.valorEnLetras = function() {
+        return valorEnLetras($scope.recibo.valor);
     };
     $scope.showconfirm = function () {
         $scope.Product = this.product;
         $('#confirmModal').modal('show');
     };
-    $scope.edit = function () {
-        $scope.Contact = this.contact;
+    $scope.edit = function (recibo) {
+        $scope.recibo = recibo;
         $scope.editMode = true;
         $('#regModal').modal('show');
     };
     //Function to Submit the form
     $scope.add = function () {
-        
         var promisePost = recibosService.post($scope.recibo);
         promisePost.then(function (d) {
-
             loadRecords();
         }, function (err) {
             alert("Some Error Occured " + JSON.stringify(err));
@@ -65,9 +64,9 @@ app.controller('contactosController', function ($scope, recibosService) {
     //Functin Para Actualizar
     $scope.update = function () {
         var Contacto = {};
-        Contacto.id = $scope.Contact.id;
-        Contacto.telefono = $scope.Contact.telefono;
-        Contacto.nombre = $scope.Contact.nombre;
+        Contacto.id = $scope.recibo.id;
+        Contacto.telefono = $scope.recibo.telefono;
+        Contacto.nombre = $scope.recibo.nombre;
         var promise = recibosService.put(Contacto.id, Contacto);
         promise.then(function (d) {
             loadRecords();
@@ -78,7 +77,7 @@ app.controller('contactosController', function ($scope, recibosService) {
     };
     //Confirmar Para Eliminar
     $scope.showconfirm = function () {
-        $scope.Contacto = this.contact;
+        $scope.Contacto = this.recibo;
         if (confirm("Desea Eliminar al Contacto:" + $scope.Contacto.nombre)) {
             var promise = recibosService.delete($scope.Contacto.id);
             promise.then(function (pl) {
